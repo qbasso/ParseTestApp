@@ -1,7 +1,5 @@
 package com.example.testapp;
 
-import java.io.Serializable;
-
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -9,11 +7,6 @@ import com.parse.ParseUser;
 
 @ParseClassName("Timezone")
 public class Timezone extends ParseObject  {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8349969912397083114L;
 
 	public ParseUser getUser() {
 		return getParseUser("user");

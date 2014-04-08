@@ -52,8 +52,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 		switch (arg0.getId()) {
 		case R.id.login:
 			final ProgressDialog pd = new ProgressDialog(this);
-			pd.setTitle("Please wait");
-			pd.setMessage("Logging in");
+			pd.setTitle(getString(R.string.please_wait));
+			pd.setMessage(getString(R.string.logging_in));
 			String username = mUsername.getText().toString().trim();
 			String password = mPassword.getText().toString().trim();
 			if (mLogin.length() > 0 && mPassword.length() > 0) {
@@ -66,7 +66,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 								pd.dismiss();
 								if (arg1 != null) {
 									Toast.makeText(LoginActivity.this,
-											arg1.getMessage(),
+											getString(R.string.server_error),
 											Toast.LENGTH_SHORT).show();
 								} else {
 									startTimezoneActivity();

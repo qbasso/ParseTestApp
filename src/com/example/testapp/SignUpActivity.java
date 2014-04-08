@@ -39,8 +39,8 @@ public class SignUpActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		final ProgressDialog pd = new ProgressDialog(this);
-		pd.setTitle("Please wait");
-		pd.setMessage("Signing up");
+		pd.setTitle(getString(R.string.please_wait));
+		pd.setMessage(getString(R.string.signing_up));
 		String username = mUsername.getText().toString().trim();
 		String password = mPassword.getText().toString().trim();
 		String repeatPassword = mPasswordRepeat.getText().toString().trim();

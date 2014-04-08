@@ -18,7 +18,12 @@
     <string name="add_timezone">Add timezone</string>
     <string name="timezone">Timezone</string>
     <string name="list_is_empty">List is empty</string>
-        <string name="gmt">GMT: %1$d</string>
-        <string name="search">Search</string>
-
+    <string name="gmt">GMT: %1$d</string>
+    <string name="search">Search</string>
+    <string name="please_wait">Please wait</string>
+    <string name="signing_up">Signing up</string>
+    <string name="logging_in">Logging in</string>
+    <string name="server_error">Exception occurred while connecting to server.</string>
+    <string name="timezone_validation_msg">Timezone or city cannot be empty!</string>
+    
 </resources>

@@ -5,7 +5,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class ClientAPI {
-	
+
 	public static void getTimezones(ParseUser user,
 			FindCallback<Timezone> callback) {
 		ParseQuery<Timezone> query = Timezone.getQuery();

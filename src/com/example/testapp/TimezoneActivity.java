@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class TimezoneActivity extends Activity implements OnItemClickListener {
@@ -70,18 +71,6 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 		public void onReceive(Context context, Intent intent) {
 			if (mListView != null && mAdapter != null) {
 				mAdapter.notifyDataSetChanged();
-				// CountDownTimer timer = new CountDownTimer(60000, 1000) {
-				//
-				// @Override
-				// public void onTick(long millisUntilFinished) {
-				// mAdapter.notifyDataSetChanged();
-				// }
-				//
-				// @Override
-				// public void onFinish() {
-				// }
-				// };
-				// timer.start();
 			}
 		}
 	};
@@ -137,10 +126,14 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
+					List<ParseObject> toDelete = new ArrayList<ParseObject>();
 					for (Integer id : checkedIds) {
 						Timezone t = mItems.get(id);
-						t.deleteInBackground();
-						mItems.remove((int) id);
+						toDelete.add(t);
+					}
+					ParseObject.deleteAllInBackground(toDelete, null);
+					for (ParseObject parseObject : toDelete) {
+						mItems.remove(parseObject);
 					}
 					mAdapter = new TimezoneAdapter(TimezoneActivity.this,
 							R.layout.list_item_timezone, mItems);
@@ -156,6 +149,7 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 			@Override
 			public void onDestroyActionMode(ActionMode mode) {
 				selectedCount = 0;
+				checkedIds.clear();
 				mListView.clearChoices();
 				mListView.requestLayout();
 				mActionMode = null;
@@ -281,9 +275,9 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent i = new Intent(this, TimezoneEditActivity.class);
-		i.putExtra(TimezoneEditActivity.EXTRA_TIMEZONE_ID, mItems.get(arg2).getObjectId());
-		startActivityForResult(i,
-				REQUEST_EDIT_ADD_TIMEZONE);
+		i.putExtra(TimezoneEditActivity.EXTRA_TIMEZONE_ID, mItems.get(arg2)
+				.getObjectId());
+		startActivityForResult(i, REQUEST_EDIT_ADD_TIMEZONE);
 	}
 
 }
