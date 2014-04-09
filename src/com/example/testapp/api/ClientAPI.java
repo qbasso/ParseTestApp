@@ -1,4 +1,4 @@
-package com.example.testapp;
+package com.example.testapp.api;
 
 import com.parse.FindCallback;
 import com.parse.ParseQuery;

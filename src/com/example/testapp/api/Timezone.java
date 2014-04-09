@@ -1,4 +1,4 @@
-package com.example.testapp;
+package com.example.testapp.api;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;

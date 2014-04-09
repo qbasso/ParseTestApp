@@ -2,6 +2,7 @@ package com.example.testapp;
 
 import android.app.Application;
 
+import com.example.testapp.api.Timezone;
 import com.parse.Parse;
 import com.parse.ParseObject;
 

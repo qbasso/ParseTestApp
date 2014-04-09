@@ -25,5 +25,6 @@
     <string name="logging_in">Logging in</string>
     <string name="server_error">Exception occurred while connecting to server.</string>
     <string name="timezone_validation_msg">Timezone or city cannot be empty!</string>
+        <string name="selected_count">%1$d selected</string>
     
 </resources>

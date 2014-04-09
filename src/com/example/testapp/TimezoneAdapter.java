@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import com.example.testapp.api.Timezone;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -172,5 +174,13 @@ public class TimezoneAdapter extends ArrayAdapter<Timezone> implements
 		h.time.setText(mSdf.format(new Date()));
 		return v;
 	}
+
+	@Override
+	public void remove(Timezone object) {
+		mFilteredItems.remove(object);
+		mOriginalItems.remove(object);
+	}
+	
+	
 
 }

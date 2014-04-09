@@ -5,12 +5,14 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.example.testapp.api.Timezone;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -49,6 +51,7 @@ public class TimezoneEditActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_edit_timezone);
 		mTimezoneName = (EditText) findViewById(R.id.timezone_name);
 		mCityName = (EditText) findViewById(R.id.city_name);
@@ -61,12 +64,14 @@ public class TimezoneEditActivity extends Activity implements OnClickListener {
 		mSave.setOnClickListener(this);
 		String s = getIntent().getStringExtra(EXTRA_TIMEZONE_ID);
 		if (s != null) {
+			setProgressBarIndeterminateVisibility(true);
 			ParseQuery<Timezone> query = Timezone.getQuery();
 			query.whereEqualTo("objectId", s);
 			query.findInBackground(new FindCallback<Timezone>() {
 
 				@Override
 				public void done(List<Timezone> arg0, ParseException arg1) {
+					setProgressBarIndeterminateVisibility(false);
 					if (arg1 == null && arg0.size() == 1) {
 						t = arg0.get(0);
 						initFields();

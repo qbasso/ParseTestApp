@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,6 +28,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.testapp.api.ClientAPI;
+import com.example.testapp.api.Timezone;
+import com.example.testapp.swipetodismiss.SwipeDismissListViewTouchListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -74,10 +78,12 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 			}
 		}
 	};
+	private SwipeDismissListViewTouchListener mSwipeToDismissListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_timezones);
 		mListView = (ListView) findViewById(R.id.list);
 		mTitle = (TextView) findViewById(R.id.title);
@@ -87,7 +93,35 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 				.findViewById(R.id.search_input);
 		mSearchInput.addTextChangedListener(mWatcher);
 		setUpListSelectMode();
+		setUpSwipeToDismiss();
 		reloadList();
+	}
+
+	private void setUpSwipeToDismiss() {
+		mSwipeToDismissListener = new SwipeDismissListViewTouchListener(
+				mListView,
+				new SwipeDismissListViewTouchListener.DismissCallbacks() {
+					@Override
+					public boolean canDismiss(int position) {
+						return true;
+					}
+
+					@Override
+					public void onDismiss(ListView listView,
+							int[] reverseSortedPositions) {
+						for (int position : reverseSortedPositions) {
+							Timezone t = mAdapter.getItem(position);
+							t.deleteInBackground();
+							mAdapter.remove(t);
+							mItems.remove(t);
+						}
+						mAdapter.notifyDataSetChanged();
+						showEmptyMessageIfNeeded();
+					}
+				});
+		mListView.setOnTouchListener(mSwipeToDismissListener);
+		mListView.setOnScrollListener(mSwipeToDismissListener
+				.makeScrollListener());
 	}
 
 	private void setUpListSelectMode() {
@@ -107,10 +141,11 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 					checkedIds.remove(position);
 					selectedCount--;
 				}
-				mode.setTitle(String.format("%d selected", selectedCount));
+				mode.setTitle(getString(R.string.selected_count, selectedCount));
 			}
 
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				mSwipeToDismissListener.setEnabled(false);
 				MenuInflater inflater = mode.getMenuInflater();
 				inflater.inflate(R.menu.timezone_list_contextual, menu);
 				mActionMode = mode;
@@ -128,16 +163,14 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 				case R.id.action_delete:
 					List<ParseObject> toDelete = new ArrayList<ParseObject>();
 					for (Integer id : checkedIds) {
-						Timezone t = mItems.get(id);
+						Timezone t = mAdapter.getItem(id);
 						toDelete.add(t);
 					}
 					ParseObject.deleteAllInBackground(toDelete, null);
 					for (ParseObject parseObject : toDelete) {
+						mAdapter.remove((Timezone) parseObject);
 						mItems.remove(parseObject);
 					}
-					mAdapter = new TimezoneAdapter(TimezoneActivity.this,
-							R.layout.list_item_timezone, mItems);
-					mListView.setAdapter(mAdapter);
 					showEmptyMessageIfNeeded();
 					mode.finish();
 					return true;
@@ -152,6 +185,7 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 				checkedIds.clear();
 				mListView.clearChoices();
 				mListView.requestLayout();
+				mSwipeToDismissListener.setEnabled(true);
 				mActionMode = null;
 			}
 		});
@@ -214,18 +248,16 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 	}
 
 	private void reloadList() {
+		setProgressBarIndeterminateVisibility(true);
 		ClientAPI.getTimezones(ParseUser.getCurrentUser(),
 				new FindCallback<Timezone>() {
 					@Override
 					public void done(List<Timezone> arg0, ParseException arg1) {
+						setProgressBarIndeterminateVisibility(false);
 						if (arg1 == null) {
 							mItems = arg0;
+							refreshAdapter();
 							showEmptyMessageIfNeeded();
-							mAdapter = new TimezoneAdapter(
-									TimezoneActivity.this,
-									R.layout.list_item_timezone,
-									new ArrayList<Timezone>(mItems));
-							mListView.setAdapter(mAdapter);
 						} else {
 							mTitle.setVisibility(View.VISIBLE);
 						}
@@ -275,9 +307,23 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		Intent i = new Intent(this, TimezoneEditActivity.class);
-		i.putExtra(TimezoneEditActivity.EXTRA_TIMEZONE_ID, mItems.get(arg2)
-				.getObjectId());
+		i.putExtra(TimezoneEditActivity.EXTRA_TIMEZONE_ID,
+				mAdapter.getItem(arg2).getObjectId());
 		startActivityForResult(i, REQUEST_EDIT_ADD_TIMEZONE);
 	}
 
+	private void refreshAdapter() {
+		mAdapter = new TimezoneAdapter(TimezoneActivity.this,
+				R.layout.list_item_timezone, new ArrayList<Timezone>(mItems));
+		if (mSearchEnabled) {
+			mAdapter.getFilter().filter(mSearchInput.getText().toString());
+		}
+		mListView.post(new Runnable() {
+
+			@Override
+			public void run() {
+				mListView.setAdapter(mAdapter);
+			}
+		});
+	}
 }
