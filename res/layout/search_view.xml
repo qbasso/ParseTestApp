@@ -13,11 +13,11 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
+        android:textCursorDrawable="@null"
         android:hint="@string/search"
         android:textColor="#ffffff"
         android:textColorHint="#ffffff" >
 
-        <requestFocus />
     </EditText>
 
 </LinearLayout>

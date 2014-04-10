@@ -199,6 +199,7 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 			ab.setDisplayShowTitleEnabled(false);
 			ab.setCustomView(mActionBarSearchView);
 			mSearchEnabled = true;
+			mSearchInput.requestFocus();
 			invalidateOptionsMenu();
 		} else {
 			ab.setDisplayShowTitleEnabled(true);
