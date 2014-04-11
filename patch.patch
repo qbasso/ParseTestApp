@@ -1,0 +1,146 @@
+diff --git a/.classpath b/.classpath
+index 7bc01d9..5176974 100644
+--- a/.classpath
++++ b/.classpath
+@@ -1,9 +1,9 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <classpath>
+-	<classpathentry kind="src" path="src"/>
+-	<classpathentry kind="src" path="gen"/>
+ 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+ 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+ 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
++	<classpathentry kind="src" path="src"/>
++	<classpathentry kind="src" path="gen"/>
+ 	<classpathentry kind="output" path="bin/classes"/>
+ </classpath>
+diff --git a/src/com/example/testapp/LoginActivity.java b/src/com/example/testapp/LoginActivity.java
+index 26ccf7c..294b3c8 100644
+--- a/src/com/example/testapp/LoginActivity.java
++++ b/src/com/example/testapp/LoginActivity.java
+@@ -1,5 +1,7 @@
+ package com.example.testapp;
+ 
++import roboguice.activity.RoboActivity;
++import roboguice.inject.InjectView;
+ import android.app.Activity;
+ import android.app.ProgressDialog;
+ import android.content.Intent;
+@@ -14,11 +16,15 @@ import com.parse.LogInCallback;
+ import com.parse.ParseException;
+ import com.parse.ParseUser;
+ 
+-public class LoginActivity extends Activity implements OnClickListener {
++public class LoginActivity extends RoboActivity implements OnClickListener {
+ 
++	@InjectView(R.id.login)
+ 	private Button mLogin;
++	@InjectView(R.id.signup)
+ 	private Button mSignup;
++	@InjectView(R.id.name)
+ 	private EditText mUsername;
++	@InjectView(R.id.password)
+ 	private EditText mPassword;
+ 
+ 	@Override
+@@ -39,12 +45,8 @@ public class LoginActivity extends Activity implements OnClickListener {
+ 	}
+ 
+ 	private void initView() {
+-		mLogin = (Button) findViewById(R.id.login);
+ 		mLogin.setOnClickListener(this);
+-		mSignup = (Button) findViewById(R.id.signup);
+ 		mSignup.setOnClickListener(this);
+-		mUsername = (EditText) findViewById(R.id.name);
+-		mPassword = (EditText) findViewById(R.id.password);
+ 	}
+ 
+ 	@Override
+diff --git a/src/com/example/testapp/SignUpActivity.java b/src/com/example/testapp/SignUpActivity.java
+index a1c521e..7fcaa2b 100644
+--- a/src/com/example/testapp/SignUpActivity.java
++++ b/src/com/example/testapp/SignUpActivity.java
+@@ -1,6 +1,7 @@
+ package com.example.testapp;
+ 
+-import android.app.Activity;
++import roboguice.activity.RoboActivity;
++import roboguice.inject.InjectView;
+ import android.app.ProgressDialog;
+ import android.content.Intent;
+ import android.os.Bundle;
+@@ -14,11 +15,15 @@ import com.parse.ParseException;
+ import com.parse.ParseUser;
+ import com.parse.SignUpCallback;
+ 
+-public class SignUpActivity extends Activity implements OnClickListener {
++public class SignUpActivity extends RoboActivity implements OnClickListener {
+ 
++	@InjectView(R.id.signup)
+ 	private Button mSignup;
++	@InjectView(R.id.name)
+ 	private EditText mUsername;
++	@InjectView(R.id.password)
+ 	private EditText mPassword;
++	@InjectView(R.id.repeatPassword)
+ 	private EditText mPasswordRepeat;
+ 
+ 	@Override
+@@ -29,11 +34,7 @@ public class SignUpActivity extends Activity implements OnClickListener {
+ 	}
+ 
+ 	private void initView() {
+-		mSignup = (Button) findViewById(R.id.signup);
+ 		mSignup.setOnClickListener(this);
+-		mUsername = (EditText) findViewById(R.id.name);
+-		mPassword = (EditText) findViewById(R.id.password);
+-		mPasswordRepeat = (EditText) findViewById(R.id.repeatPassword);
+ 	}
+ 
+ 	@Override
+diff --git a/src/com/example/testapp/TimezoneActivity.java b/src/com/example/testapp/TimezoneActivity.java
+index ac202f9..55e8e06 100644
+--- a/src/com/example/testapp/TimezoneActivity.java
++++ b/src/com/example/testapp/TimezoneActivity.java
+@@ -5,8 +5,11 @@ import java.util.HashSet;
+ import java.util.List;
+ import java.util.Set;
+ 
++import roboguice.activity.RoboActivity;
++import roboguice.inject.ContentView;
++import roboguice.inject.InjectView;
++
+ import android.app.ActionBar;
+-import android.app.Activity;
+ import android.content.BroadcastReceiver;
+ import android.content.Context;
+ import android.content.Intent;
+@@ -36,10 +39,14 @@ import com.parse.ParseException;
+ import com.parse.ParseObject;
+ import com.parse.ParseUser;
+ 
+-public class TimezoneActivity extends Activity implements OnItemClickListener {
++@ContentView(R.layout.activity_timezones)
++public class TimezoneActivity extends RoboActivity implements
++		OnItemClickListener {
+ 
+ 	private static final int REQUEST_EDIT_ADD_TIMEZONE = 10;
++	@InjectView(R.id.list)
+ 	private ListView mListView;
++	@InjectView(R.id.title)
+ 	private TextView mTitle;
+ 	protected List<Timezone> mItems;
+ 	protected ActionMode mActionMode;
+@@ -82,11 +89,8 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
+ 
+ 	@Override
+ 	protected void onCreate(Bundle savedInstanceState) {
+-		super.onCreate(savedInstanceState);
+ 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+-		setContentView(R.layout.activity_timezones);
+-		mListView = (ListView) findViewById(R.id.list);
+-		mTitle = (TextView) findViewById(R.id.title);
++		super.onCreate(savedInstanceState);
+ 		mActionBarSearchView = LayoutInflater.from(this).inflate(
+ 				R.layout.search_view, null);
+ 		mSearchInput = (EditText) mActionBarSearchView

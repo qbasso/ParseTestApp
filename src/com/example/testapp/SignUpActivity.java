@@ -1,6 +1,7 @@
 package com.example.testapp;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +15,15 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class SignUpActivity extends Activity implements OnClickListener {
+public class SignUpActivity extends RoboActivity implements OnClickListener {
 
+	@InjectView(R.id.signup)
 	private Button mSignup;
+	@InjectView(R.id.name)
 	private EditText mUsername;
+	@InjectView(R.id.password)
 	private EditText mPassword;
+	@InjectView(R.id.repeatPassword)
 	private EditText mPasswordRepeat;
 
 	@Override
@@ -29,11 +34,7 @@ public class SignUpActivity extends Activity implements OnClickListener {
 	}
 
 	private void initView() {
-		mSignup = (Button) findViewById(R.id.signup);
 		mSignup.setOnClickListener(this);
-		mUsername = (EditText) findViewById(R.id.name);
-		mPassword = (EditText) findViewById(R.id.password);
-		mPasswordRepeat = (EditText) findViewById(R.id.repeatPassword);
 	}
 
 	@Override

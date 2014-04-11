@@ -5,8 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import roboguice.activity.RoboActivity;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
+
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +39,14 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-public class TimezoneActivity extends Activity implements OnItemClickListener {
+@ContentView(R.layout.activity_timezones)
+public class TimezoneActivity extends RoboActivity implements
+		OnItemClickListener {
 
 	private static final int REQUEST_EDIT_ADD_TIMEZONE = 10;
+	@InjectView(R.id.list)
 	private ListView mListView;
+	@InjectView(R.id.title)
 	private TextView mTitle;
 	protected List<Timezone> mItems;
 	protected ActionMode mActionMode;
@@ -82,11 +89,8 @@ public class TimezoneActivity extends Activity implements OnItemClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setContentView(R.layout.activity_timezones);
-		mListView = (ListView) findViewById(R.id.list);
-		mTitle = (TextView) findViewById(R.id.title);
+		super.onCreate(savedInstanceState);
 		mActionBarSearchView = LayoutInflater.from(this).inflate(
 				R.layout.search_view, null);
 		mSearchInput = (EditText) mActionBarSearchView
